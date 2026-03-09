@@ -51,13 +51,14 @@ NULL
                           stepsize,
                           max_treedepth,
                           ncore,
+                          seed = 42,
                           inc_postpred = FALSE,
                           postpreds = NULL) {
   stan_model <- .hbayesdm_compile(model_name)
   inits <- .hbayesdm_resolve_inits(gen_init, nchain)
 
   if (vb) {
-    fit <- stan_model$variational(data = data_list, init = inits)
+    fit <- stan_model$variational(data = data_list, init = inits, seed = seed)
   } else {
     iter_sampling <- max(1L, niter - nwarmup)
     fit <- stan_model$sample(
@@ -71,6 +72,7 @@ NULL
       step_size       = stepsize,
       max_treedepth   = max_treedepth,
       init            = inits,
+      seed            = seed,
       refresh         = 0,
       show_messages   = FALSE,
       show_exceptions = FALSE
