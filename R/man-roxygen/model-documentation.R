@@ -1,12 +1,15 @@
 #' @title <%= MODEL_NAME %>
 #'
 #' @description
-#' <%= MODEL_TYPE %> Bayesian Modeling of the <%= TASK_NAME %> using <%= MODEL_NAME %>.
+#' <% .task_name <- get0("TASK_NAME", ifnotfound = NA) %>
+#' <% .task_cite <- get0("TASK_CITE", ifnotfound = NA) %>
+#' <% .model_cite <- get0("MODEL_CITE", ifnotfound = NA) %>
+#' <%= MODEL_TYPE %> Bayesian Modeling<%= ifelse(!is.na(.task_name), paste0(" of the ", .task_name), "") %> using <%= MODEL_NAME %>.
 #' It has the following parameters: <%= PARAMETERS %>.
 #'
 #' \itemize{
-#'   \item \strong{Task}: <%= TASK_NAME %> <%= ifelse(!is.na(TASK_CITE), TASK_CITE, '') %>
-#'   \item \strong{Model}: <%= MODEL_NAME %> <%= ifelse(!is.na(MODEL_CITE), MODEL_CITE, '') %>
+#'   <%= ifelse(!is.na(.task_name), paste0("\\item \\strong{Task}: ", .task_name, " ", ifelse(!is.na(.task_cite), .task_cite, "")), "") %>
+#'   \item \strong{Model}: <%= MODEL_NAME %> <%= ifelse(!is.na(.model_cite), .model_cite, '') %>
 #' }
 #'
 #' @param data Data to be modeled. It should be given as a data.frame object,
@@ -26,15 +29,17 @@
 #' @param indPars Character value specifying how to summarize individual parameters. Current options
 #'   are: "mean", "median", or "mode".
 #' @param modelRegressor
-#'   <% EXISTS_REGRESSORS <- paste0("For this model they are: ", get0("REGRESSORS"), ".") %>
+#'   <% .regressors <- get0("REGRESSORS", ifnotfound = NA) %>
+#'   <% EXISTS_REGRESSORS <- paste0("For this model they are: ", .regressors, ".") %>
 #'   <% NOT_EXISTS_REGRESSORS <- "Not available for this model." %>
 #'   Whether to export model-based regressors (\code{TRUE} or \code{FALSE}).
-#'   <%= ifelse(!is.na(REGRESSORS), EXISTS_REGRESSORS, NOT_EXISTS_REGRESSORS) %>
+#'   <%= ifelse(!is.na(.regressors), EXISTS_REGRESSORS, NOT_EXISTS_REGRESSORS) %>
 #' @param vb Use variational inference to approximately draw from a posterior distribution. Defaults
 #'   to \code{FALSE}.
 #' @param inc_postpred
-#'   <% HAS_POSTPREDS <- !is.na(POSTPREDS) %>
-#'   <% PP_T <- paste0("If set to \\code{TRUE}, it includes: ", POSTPREDS) %>
+#'   <% .postpreds <- get0("POSTPREDS", ifnotfound = NA) %>
+#'   <% HAS_POSTPREDS <- !is.na(.postpreds) %>
+#'   <% PP_T <- paste0("If set to \\code{TRUE}, it includes: ", .postpreds) %>
 #'   <% PP_F <- "Not available for this model." %>
 #'   Include trial-level posterior predictive simulations in model output (may greatly increase file
 #'   size). Defaults to \code{FALSE}.
@@ -76,7 +81,7 @@
 #'     the user.}
 #'   <% RETURN_REGRESSORS <- "\\item{modelRegressor}{List object containing the " %>
 #'   <% RETURN_REGRESSORS <- paste0(RETURN_REGRESSORS, "extracted model-based regressors.}") %>
-#'   <%= ifelse(!is.na("REGRESSORS"), RETURN_REGRESSORS, "") %>
+#'   <%= ifelse(!is.na(.regressors), RETURN_REGRESSORS, "") %>
 #' }
 #'
 #' @details
@@ -86,7 +91,7 @@
 #'   extension information, e.g. ".txt") of the file that contains the behavioral data-set of all
 #'   subjects of interest for the current analysis. The file should be a \strong{tab-delimited} text
 #'   file, whose rows represent trial-by-trial observations and columns represent variables.\cr
-#' For the <%= TASK_NAME %>, there should be <%= LENGTH_DATA_COLUMNS %> columns of data with the
+#' For the <%= ifelse(!is.na(.task_name), .task_name, MODEL_NAME) %>, there should be <%= LENGTH_DATA_COLUMNS %> columns of data with the
 #'   labels <%= DATA_COLUMNS %>. It is not necessary for the columns to be in this particular order,
 #'   however it is necessary that they be labeled correctly and contain the information below:
 #' \describe{
@@ -137,7 +142,8 @@
 #'   \pkg{cmdstanr} (no install-time precompile). Expect a one-time ~30s wait per model;
 #'   subsequent fits reuse the cached binary.
 #'
-#' <%= ifelse(!is.na(CONTRIBUTOR), paste0("\\subsection{Contributors}{", CONTRIBUTOR, "}"), "") %>
+#' <% .contributor <- get0("CONTRIBUTOR", ifnotfound = NA) %>
+#' <%= ifelse(!is.na(.contributor), paste0("\\subsection{Contributors}{", .contributor, "}"), "") %>
 #'
 #' @seealso
 #' We refer users to our in-depth tutorial for an example of using hBayesDM:

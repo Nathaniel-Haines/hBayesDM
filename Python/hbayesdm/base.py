@@ -585,13 +585,28 @@ class TaskModel(metaclass=ABCMeta):
              **kwargs):
         """Plot hyper-parameter distributions or traces.
 
+        For hierarchical models, the group-level ``mu_*`` parameters are
+        plotted; for ``single`` models, the individual parameters themselves.
+
         Parameters
         ----------
         type : {'dist', 'trace'}
+            ``'dist'`` plots posterior densities with a credible interval and
+            point estimate (via ``arviz.plot_dist``). ``'trace'`` plots MCMC
+            traces alongside marginal densities (via ``arviz.plot_trace``).
         ci_prob : float
-            Credible interval probability mass. Defaults to 0.94.
+            Credible interval probability mass for ``type='dist'``. Defaults
+            to 0.94.
         point_estimate : {'mean', 'median', 'mode'} or None
-        **kwargs : passed through to the underlying arviz plot.
+            Which posterior point estimate to mark on density plots. Set to
+            ``None`` to omit. Only applies when ``type='dist'``.
+        **kwargs
+            Forwarded to the underlying arviz plotting function.
+
+        Raises
+        ------
+        RuntimeError
+            If ``type`` is not one of the supported options.
         """
         type_options = ('dist', 'trace')
         if type not in type_options:
@@ -618,7 +633,23 @@ class TaskModel(metaclass=ABCMeta):
                  var_names: Union[str, List[str]] = None,
                  ci_prob: float = 0.94,
                  **kwargs):
-        """Plot per-subject posterior summaries via `arviz.plot_forest`."""
+        """Plot per-subject posterior summaries via ``arviz.plot_forest``.
+
+        Renders a forest plot with one row per subject for each requested
+        parameter, showing posterior intervals so that individual differences
+        can be compared at a glance.
+
+        Parameters
+        ----------
+        var_names
+            Parameter name(s) to plot. Defaults to all individual-level
+            parameters (``self.parameters_desc``).
+        ci_prob
+            Outer credible interval probability mass. The inner interval is
+            fixed at 0.5 (IQR-like). Defaults to 0.94.
+        **kwargs
+            Forwarded to ``arviz.plot_forest``.
+        """
         if var_names is None:
             var_names = list(self.parameters_desc)
 

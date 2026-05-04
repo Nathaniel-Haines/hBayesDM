@@ -1,3 +1,2 @@
-#' @noRd
-#' Reserved for package-level settings.
+# Reserved for package-level settings.
 NULL

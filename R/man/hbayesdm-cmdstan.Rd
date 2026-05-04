@@ -4,8 +4,7 @@
 \alias{hbayesdm-cmdstan}
 \title{Internal helpers for fitting hBayesDM Stan models via cmdstanr.}
 \description{
-These functions abstract the cmdstanr API so per-task R files don't have to
-know about it. The compiled Stan binaries are cached by cmdstanr next to the
-source `.stan` files, so there is no install-time precompilation step.
+Wraps the cmdstanr API so per-task R files don't have to know about it.
+Compiled Stan binaries are cached next to the source `.stan` files.
 }
 \keyword{internal}

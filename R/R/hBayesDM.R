@@ -1,8 +1,7 @@
 #' @title Hierarchical Bayesian Modeling of Decision-Making Tasks
 #'
-#' @docType package
 #' @name hBayesDM-package
-#' @aliases hBayesDM
+#' @aliases hBayesDM hBayesDM-package
 #'
 #' @import methods
 #'
@@ -74,4 +73,4 @@
 #'
 #' Lei Zhang \email{bnuzhanglei2008@@gmail.com}
 #'
-NULL
+"_PACKAGE"
