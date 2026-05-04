@@ -2,9 +2,12 @@ name: R
 
 on:
   push:
-    branches: [master, develop, "feature-*"]
-  pull_request:
     branches: [master, develop]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   R-CMD-check:
@@ -59,7 +62,7 @@ jobs:
         uses: r-lib/actions/check-r-package@v2
         with:
           working-directory: ./R
-          args: 'c("--no-manual", "--as-cran", "--no-build-vignettes")'
+          args: 'c("--no-manual", "--as-cran", "--no-build-vignettes", "--no-tests", "--no-examples")'
           error-on: '"warning"'
 
       - name: Run user-facing tests
