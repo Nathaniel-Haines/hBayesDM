@@ -33,12 +33,12 @@
 #'    values (as specified by \code{'indPars'}) for each subject.}
 #'  \item{\code{parVals}}{A \code{'list'} where each element contains posterior samples
 #'    over different model parameters. }
-#'  \item{\code{fit}}{A class \code{'stanfit'} object containing the fitted model.}
+#'  \item{\code{fit}}{A \code{CmdStanMCMC} object (or \code{CmdStanVB} when \code{vb = TRUE})
+#'    produced by \pkg{cmdstanr} containing the fitted model.}
 #'  \item{\code{rawdata}}{\code{"data.frame"} containing the raw data used to fit the model, as specified by the user.}
 #' }
 #'
 #' @include settings.R
-#' @importFrom rstan vb sampling stan_model rstan_options extract
 #' @importFrom parallel detectCores
 #' @importFrom stats median qnorm density
 #' @importFrom utils read.table
@@ -275,41 +275,25 @@ choiceRT_lba_single <- function(data           = "choose",
     options(mc.cores = 1)
   }
 
-  cat("***********************************\n")
-  cat("**  Loading a precompiled model  **\n")
-  cat("***********************************\n")
-
-  # Fit the Stan model
-  if (FLAG_BUILD_ALL) {
-    m = stanmodels$choiceRT_lba_single
-  } else {
-    model_path <- system.file("stan_files", paste0(modelName, ".stan"),
-                              package="hBayesDM")
-    m <- rstan::stan_model(model_path)
-  }
-
-  if (vb) {   # if variational Bayesian
-    fit = rstan::vb(m,
-                    data   = dataList,
-                    pars   = POI,
-                    init   = genInitList)
-  } else {
-    fit = rstan::sampling(m,
-                          data   = dataList,
-                          pars   = POI,
-                          warmup = nwarmup,
-                          init   = genInitList,
-                          iter   = niter,
-                          chains = nchain,
-                          thin   = nthin,
-                          control = list(adapt_delta   = adapt_delta,
-                                         max_treedepth = max_treedepth,
-                                         stepsize      = stepsize))
-  }
-  parVals <- rstan::extract(fit, permuted = T)
-  if (inc_postpred) {
-    parVals$y_pred[parVals$y_pred == -1] <- NA
-  }
+  fit_result <- .hbayesdm_fit(
+    model_name    = modelName,
+    data_list     = dataList,
+    pars          = POI,
+    gen_init      = genInitList,
+    vb            = vb,
+    nchain        = nchain,
+    niter         = niter,
+    nwarmup       = nwarmup,
+    nthin         = nthin,
+    adapt_delta   = adapt_delta,
+    stepsize      = stepsize,
+    max_treedepth = max_treedepth,
+    ncore         = ncore,
+    inc_postpred  = inc_postpred,
+    postpreds     = "y_pred"
+  )
+  fit <- fit_result$fit
+  parVals <- fit_result$par_vals
 
   d   <- parVals$d
   A   <- parVals$A

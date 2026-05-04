@@ -61,7 +61,8 @@ choiceRT_lba_single(
    values (as specified by \code{'indPars'}) for each subject.}
  \item{\code{parVals}}{A \code{'list'} where each element contains posterior samples
    over different model parameters. }
- \item{\code{fit}}{A class \code{'stanfit'} object containing the fitted model.}
+ \item{\code{fit}}{A \code{CmdStanMCMC} object (or \code{CmdStanVB} when \code{vb = TRUE})
+   produced by \pkg{cmdstanr} containing the fitted model.}
  \item{\code{rawdata}}{\code{"data.frame"} containing the raw data used to fit the model, as specified by the user.}
 }
 }

@@ -3,10 +3,8 @@
 #' @docType package
 #' @name hBayesDM-package
 #' @aliases hBayesDM
-#' @useDynLib hBayesDM, .registration = TRUE
 #'
 #' @import methods
-#' @import Rcpp
 #'
 #' @description
 #' Fit an array of decision-making tasks with computational models in a hierarchical Bayesian framework. Can perform hierarchical Bayesian analysis of various computational models with a single line of coding.

@@ -2,21 +2,23 @@
 % Please edit documentation in R/plotInd.R
 \name{plotInd}
 \alias{plotInd}
-\title{Plots individual posterior distributions, using the stan_plot function of the rstan package}
+\title{Plots individual posterior distributions using \pkg{bayesplot}.}
 \usage{
 plotInd(obj = NULL, pars, show_density = T, ...)
 }
 \arguments{
-\item{obj}{An output of the hBayesDM. Its class should be 'hBayesDM'.}
+\item{obj}{An output of hBayesDM. Its class should be \code{'hBayesDM'}.}
 
-\item{pars}{(from stan_plot's help file) Character vector of parameter names. If unspecified, show all user-defined parameters or the first 10 (if there are more than 10)}
+\item{pars}{Character vector of parameter names to plot.}
 
-\item{show_density}{T(rue) or F(alse). Show the density (T) or not (F)?}
+\item{show_density}{If \code{TRUE}, draws posterior densities via
+\code{bayesplot::mcmc_areas}; otherwise draws point intervals via
+\code{bayesplot::mcmc_intervals}.}
 
-\item{...}{(from stan_plot's help file) Optional additional named arguments passed to stan_plot, which will be passed to geoms. See stan_plot's help file.}
+\item{...}{Additional arguments forwarded to the underlying \pkg{bayesplot} function.}
 }
 \description{
-Plots individual posterior distributions, using the stan_plot function of the rstan package
+Plots individual posterior distributions using \pkg{bayesplot}.
 }
 \examples{
 \dontrun{

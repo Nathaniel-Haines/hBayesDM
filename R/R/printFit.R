@@ -7,7 +7,6 @@
 #'
 #' @return modelTable A table with relevant model comparison data. LOOIC and WAIC weights are computed as Akaike weights. 
 
-#' @importFrom rstan rstan_options
 #' @export
 #' @examples
 #' \dontrun{

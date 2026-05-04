@@ -8,12 +8,11 @@
 #' @keywords internal
 #'
 #' @include settings.R
-#' @include stanmodels.R
+#' @include fit_cmdstan.R
 #' @importFrom utils head
 #' @importFrom stats complete.cases qnorm median
 #' @importFrom data.table fread
 #' @importFrom parallel detectCores
-#' @importFrom rstan stan_model vb sampling extract
 #'
 #' @param task_name Character value for name of task. E.g. \code{"gng"}.
 #' @param model_name Character value for name of model. E.g. \code{"m1"}.
@@ -30,9 +29,9 @@
 #' @param postpreds Character vector of name(s) for the trial-level posterior predictive
 #'   simulations. Default is \code{"y_pred"}. OR if posterior predictions are not yet available for
 #'   this model, \code{NULL}.
-#' @param stanmodel_arg Leave as \code{NULL} (default) for completed models. Else should either be a
-#'   character value (specifying the name of a Stan file) OR a \code{stanmodel} object (returned as
-#'   a result of running \code{\link[rstan]{stan_model}}).
+#' @param stanmodel_arg Leave as \code{NULL} (default) for completed models. Else should be either a
+#'   character value (the path to a Stan file) or a pre-compiled \code{cmdstanr::CmdStanModel}
+#'   object.
 #' @param preprocess_func Function to preprocess the raw data before it gets passed to Stan. Takes
 #'   (at least) two arguments: a data.table object \code{raw_data} and a list object
 #'   \code{general_info}. Possible to include additional argument(s) to use during preprocessing.
@@ -279,7 +278,9 @@ hBayesDM_model <- function(task_name = "",
       # set default values if not specified in args
       for (nm in names(additional_args)) {
         if (!nm %in% names(args)) {
-          args[[nm]] <- additional_args[[nm]]
+          # Single-bracket list assignment so NULL defaults survive (the
+          # double-bracket form would drop the entry instead).
+          args[nm] <- list(additional_args[[nm]])
         }
       }
       data_list <- do.call(preprocess_func, c(list(raw_data, general_info), args))
@@ -390,18 +391,8 @@ hBayesDM_model <- function(task_name = "",
       cat("\n")
     }
 
-    # Designate the Stan model
-    if (is.null(stanmodel_arg)) {
-      if (FLAG_BUILD_ALL) {
-        stanmodel_arg <- stanmodels[[model]]
-      } else {
-        model_path <- system.file("stan_files", paste0(model, ".stan"),
-                                  package="hBayesDM")
-        stanmodel_arg <- rstan::stan_model(model_path)
-      }
-    } else if (is.character(stanmodel_arg)) {
-      stanmodel_arg <- rstan::stan_model(stanmodel_arg)
-    }
+    # The Stan model name to use (cmdstanr will lazily compile on first use)
+    stan_model_name <- if (is.null(stanmodel_arg)) model else stanmodel_arg
 
     # Initial values for the parameters
     gen_init <- NULL
@@ -420,8 +411,10 @@ hBayesDM_model <- function(task_name = "",
         cat("****************************************\n")
 
         make_gen_init_from_vb <- function() {
-          fit_vb <- rstan::vb(object = stanmodel_arg, data = data_list)
-          m_vb <- colMeans(as.data.frame(fit_vb))
+          stan_model_obj <- .hbayesdm_compile(stan_model_name)
+          fit_vb <- stan_model_obj$variational(data = data_list)
+          draws_df <- posterior::as_draws_df(fit_vb$draws())
+          m_vb <- colMeans(as.data.frame(draws_df))
 
           function() {
             ret <- list(
@@ -496,35 +489,25 @@ hBayesDM_model <- function(task_name = "",
 
     ############### Fit & extract ###############
 
-    # Fit the Stan model
-    if (vb) {
-      fit <- rstan::vb(object = stanmodel_arg,
-                       data   = data_list,
-                       pars   = pars,
-                       init   = gen_init)
-    } else {
-      fit <- rstan::sampling(object  = stanmodel_arg,
-                             data    = data_list,
-                             pars    = pars,
-                             init    = gen_init,
-                             chains  = nchain,
-                             iter    = niter,
-                             warmup  = nwarmup,
-                             thin    = nthin,
-                             control = list(adapt_delta   = adapt_delta,
-                                            stepsize      = stepsize,
-                                            max_treedepth = max_treedepth))
-    }
-
-    # Extract from the Stan fit object
-    parVals <- rstan::extract(fit, permuted = TRUE)
-
-    # Trial-level posterior predictive simulations
-    if (inc_postpred) {
-      for (pp in postpreds) {
-        parVals[[pp]][parVals[[pp]] == -1] <- NA
-      }
-    }
+    fit_result <- .hbayesdm_fit(
+      model_name    = stan_model_name,
+      data_list     = data_list,
+      pars          = pars,
+      gen_init      = gen_init,
+      vb            = vb,
+      nchain        = nchain,
+      niter         = niter,
+      nwarmup       = nwarmup,
+      nthin         = nthin,
+      adapt_delta   = adapt_delta,
+      stepsize      = stepsize,
+      max_treedepth = max_treedepth,
+      ncore         = ncore,
+      inc_postpred  = inc_postpred,
+      postpreds     = postpreds
+    )
+    fit <- fit_result$fit
+    parVals <- fit_result$par_vals
 
     # Define measurement of individual parameters
     measure_indPars <- switch(indPars, mean = mean, median = median, mode = estimate_mode)

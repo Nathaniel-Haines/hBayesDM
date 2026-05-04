@@ -1,14 +1,9 @@
-numpy
+numpy>=2.1
 scipy
 pandas
 matplotlib
-pystan
-arviz
-pylint
-flake8
-pytest
-pytest-rerunfailures
+cmdstanpy>=1.2.5
+arviz>=0.20
 sphinx
 sphinx-autodoc-typehints
 sphinx-rtd-theme
-./Python

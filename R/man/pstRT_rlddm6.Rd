@@ -86,8 +86,9 @@ A class "hBayesDM" object \code{modelData} with the following components:
   \item{allIndPars}{Data.frame containing the summarized parameter values (as specified by
     \code{indPars}) for each subject.}
   \item{parVals}{List object containing the posterior samples over different parameters.}
-  \item{fit}{A class \code{\link[rstan]{stanfit}} object that contains the fitted Stan
-    model.}
+  \item{fit}{A \code{CmdStanMCMC} object (or \code{CmdStanVB} when \code{vb = TRUE})
+    produced by \pkg{cmdstanr}. Use \code{fit$draws()}, \code{fit$summary()}, etc. to
+    interact with the posterior; see \pkg{cmdstanr} documentation for details.}
   \item{rawdata}{Data.frame containing the raw data used to fit the model, as specified by
     the user.}
   
@@ -155,8 +156,12 @@ For the Probabilistic Selection Task (with RT data), there should be 7 columns o
   Hamiltonian Monte Carlo (Hoffman & Gelman, 2014, Journal of Machine Learning Research)' for
   more information on the sampler control parameters. One can also refer to 'Section 34.2. HMC
   Algorithm Parameters' of the \href{https://mc-stan.org/users/documentation/}{Stan User's Guide
-  and Reference Manual}, or to the help page for \code{\link[rstan]{stan}} for a less technical
-  description of these arguments.
+  and Reference Manual}, or to the help pages for \code{cmdstanr::sample()} for a less
+  technical description of these arguments.
+
+\strong{First-fit compile cost:} hBayesDM 2.0 compiles each Stan model on first use via
+  \pkg{cmdstanr} (no install-time precompile). Expect a one-time ~30s wait per model;
+  subsequent fits reuse the cached binary.
 
 \subsection{Contributors}{\href{https://hydoh.github.io/}{Hoyoung Doh} <\email{hoyoung.doh@gmail.com}>, \href{https://medicine.yale.edu/lab/goldfarb/profile/sanghoon_kang/}{Sanghoon Kang} <\email{sanghoon.kang@yale.edu}>, \href{https://jihyuncindyhur.github.io/}{Jihyun K. Hur} <\email{jihyun.hur@yale.edu}>}
 }

@@ -1,12 +1,14 @@
-#' Plots individual posterior distributions, using the stan_plot function of the rstan package
+#' Plots individual posterior distributions using \pkg{bayesplot}.
 #'
-#' @param obj An output of the hBayesDM. Its class should be 'hBayesDM'.
-#' @param pars (from stan_plot's help file) Character vector of parameter names. If unspecified, show all user-defined parameters or the first 10 (if there are more than 10)
-#' @param show_density T(rue) or F(alse). Show the density (T) or not (F)?
-#' @param ...  (from stan_plot's help file) Optional additional named arguments passed to stan_plot, which will be passed to geoms. See stan_plot's help file.
+#' @param obj An output of hBayesDM. Its class should be \code{'hBayesDM'}.
+#' @param pars Character vector of parameter names to plot.
+#' @param show_density If \code{TRUE}, draws posterior densities via
+#'   \code{bayesplot::mcmc_areas}; otherwise draws point intervals via
+#'   \code{bayesplot::mcmc_intervals}.
+#' @param ... Additional arguments forwarded to the underlying \pkg{bayesplot} function.
 #'
 #' @importFrom ggplot2 ggplot geom_histogram theme xlab ylab geom_segment ggtitle aes
-#' @importFrom rstan stan_plot
+#' @importFrom bayesplot mcmc_areas
 #'
 #' @export
 #'
@@ -31,14 +33,16 @@
 plotInd <- function(obj = NULL,
                     pars,
                     show_density = T, ...) {
-  # uses 'stan_plot' from the rstan pacakge
-  # class of the object --> should be 'hBayesDM'
 
   # To pass R CMD Checks (serves no other purpose than to create binding)
   ..density.. <- NULL
 
   if (inherits(obj, "hBayesDM")) {
-    h1 = rstan::stan_plot(obj$fit, pars, show_density = show_density, ...)
+    if (show_density) {
+      h1 <- bayesplot::mcmc_areas(obj$fit$draws(pars), ...)
+    } else {
+      h1 <- bayesplot::mcmc_intervals(obj$fit$draws(pars), ...)
+    }
   } else {
     stop(paste0("\n\nThe class of the object (first argument) should be hBayesDM! \n"))
   }

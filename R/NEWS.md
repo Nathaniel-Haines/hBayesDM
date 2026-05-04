@@ -1,3 +1,57 @@
+# hBayesDM 2.0.0 (in development)
+
+Major refactor; **breaking changes**.
+
+## Backend swap: rstan → cmdstanr
+
+* The Stan backend is now [**CmdStan**](https://mc-stan.org/users/interfaces/cmdstan)
+  via [**cmdstanr**](https://mc-stan.org/cmdstanr/), replacing rstan. CmdStan is
+  a system dependency, not a CRAN package — install it once with
+  `cmdstanr::install_cmdstan()` after installing cmdstanr from the Stan
+  r-universe (see README).
+* The `fit` slot on the result object is now a **`CmdStanMCMC`** object (or
+  **`CmdStanVB`** when `vb = TRUE`), no longer a `rstan::stanfit`. Methods that
+  used to apply directly (e.g. `rstan::extract(fit)`) need to be replaced with
+  the cmdstanr / posterior equivalents — `fit$draws()`, `fit$summary()`,
+  `posterior::as_draws_*()`, etc.
+* Stan files have been canonicalized to the modern syntax (`array[N, T] real x`
+  instead of `real x[N, T]`; `abs` replacing `fabs`).
+
+## Tooling and prerequisites
+
+* **R ≥ 4.4** is now required.
+* hBayesDM no longer compiles Stan models at install time. Each model compiles
+  on first use (~30 s) and cmdstanr caches the binary for subsequent fits.
+  The `BUILD_ALL` install-time flag is gone.
+* `LinkingTo: rstan, StanHeaders, ...` and the C++ machinery they entailed have
+  been removed from the package.
+
+## API changes
+
+* `rhat()` — internally uses `posterior::rhat` via `fit$summary()` (a
+  workaround for a name-collision bug between `hBayesDM::rhat` and the string
+  `"rhat"` looked up by `cmdstanr::CmdStanFit$summary()`).
+* `extract_ic()` — now extracts `log_lik` from `fit$draws()` via
+  `posterior::as_draws_array()`. The `ic = "looic" | "waic" | "both"` API is
+  unchanged.
+* `plot.hBayesDM()` and `plotInd()` — now plot via **bayesplot**
+  (`mcmc_trace`, `mcmc_intervals`, `mcmc_areas`) instead of `rstan::stan_plot`.
+* `additional_args` plumbing fixed: model wrappers that declared a `NULL`
+  default (e.g. `banditNarm_2par_lapse` `Narm`, `pstRT_ddm` `initQ`) were
+  silently dropping it because `args[[nm]] <- NULL` removes a list element in
+  R; now uses `args[nm] <- list(NULL)` to preserve the entry.
+
+## Migration notes
+
+If you have downstream code that calls `rstan::extract(output$fit)`, replace
+it with one of:
+
+```r
+posterior::as_draws_df(output$fit$draws())   # tidy data.frame
+posterior::as_draws_rvars(output$fit$draws())
+output$parVals[["mu_k"]]                      # already-extracted samples
+```
+
 # hBayesDM 1.3.1
 
 * Add plot functions for Hierarchical Gaussian Filter models: `plot_hgf_ibrb`, `plot_hgf_ibrb_single`.
