@@ -18,8 +18,9 @@ Guidance for Claude (and humans) working in this repo.
 - **Stan backend**: CmdStan via cmdstanr (R) and cmdstanpy (Python). Models
   compile on first use and the binaries are cached next to the `.stan` file.
   No install-time precompilation.
-- **R**: ≥ 4.4. Pinned in `.tool-versions` (asdf).
-- **Python**: ≥ 3.13. Pinned in `.tool-versions`. Build/dependency manager is
+- **R**: ≥ 4.4. Required in `R/DESCRIPTION` (`Depends`).
+- **Python**: ≥ 3.13. Required in `Python/pyproject.toml` (`requires-python`).
+  Build/dependency manager is
   **uv** with **hatchling** (`Python/pyproject.toml`).
 - **Stan syntax**: canonical (`array[N, T] real x`, not `real x[N, T]`; `abs`,
   not `fabs`). If you add a new model, write it in canonical form.
