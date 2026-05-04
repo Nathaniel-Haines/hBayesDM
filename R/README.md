@@ -4,8 +4,7 @@
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Build
-Status](https://travis-ci.org/CCS-Lab/hBayesDM.svg?branch=develop)](https://travis-ci.org/CCS-Lab/hBayesDM)
+[![R](https://github.com/CCS-Lab/hBayesDM/actions/workflows/R.yaml/badge.svg)](https://github.com/CCS-Lab/hBayesDM/actions/workflows/R.yaml)
 [![Documentation](https://github.com/CCS-Lab/hBayesDM/workflows/Documentation/badge.svg)](https://github.com/CCS-Lab/hBayesDM/actions?query=workflow%3ADocumentation)
 [![CRAN Latest
 Release](https://www.r-pkg.org/badges/version-last-release/hBayesDM)](https://cran.r-project.org/package=hBayesDM)
