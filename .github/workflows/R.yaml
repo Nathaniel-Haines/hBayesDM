@@ -65,17 +65,10 @@ jobs:
           args: 'c("--no-manual", "--as-cran", "--no-build-vignettes", "--no-tests", "--no-examples")'
           error-on: '"warning"'
 
-      - name: Run user-facing tests
-        env:
-          NOT_CRAN: "true"
-        run: |
-          R CMD INSTALL --no-docs --no-test-load .
-          Rscript -e 'testthat::test_file("tests/testthat/test_user_facing.R", reporter = "progress")'
-        working-directory: ./R
-
-      - name: Code coverage
+      - name: Run user-facing tests + upload coverage
         if: matrix.config.os == 'ubuntu-latest'
         env:
           NOT_CRAN: "true"
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
-          Rscript -e 'covr::codecov(path = "R", quiet = FALSE, type = "none", code = "testthat::test_file(\"tests/testthat/test_user_facing.R\")")'
+          Rscript -e 'covr::codecov(path = "R", quiet = FALSE, type = "none", code = "testthat::test_file(\"tests/testthat/test_user_facing.R\", reporter = \"progress\")")'
