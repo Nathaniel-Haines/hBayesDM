@@ -70,5 +70,6 @@ jobs:
         env:
           NOT_CRAN: "true"
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          TEST_FILE: ${{ github.workspace }}/R/tests/testthat/test_user_facing.R
         run: |
-          Rscript -e 'covr::codecov(path = "R", quiet = FALSE, type = "none", code = "testthat::test_file(\"tests/testthat/test_user_facing.R\", reporter = \"progress\")")'
+          Rscript -e "covr::codecov(path = 'R', quiet = FALSE, type = 'none', code = sprintf('testthat::test_file(\"%s\", reporter = \"progress\")', Sys.getenv('TEST_FILE')))"
