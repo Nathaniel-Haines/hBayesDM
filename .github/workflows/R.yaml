@@ -67,15 +67,18 @@ jobs:
           args: 'c("--no-manual", "--as-cran", "--no-build-vignettes", "--no-tests", "--no-examples")'
           error-on: '"warning"'
 
+      - name: Install hBayesDM
+        shell: bash
+        run: R CMD INSTALL R
+
       - name: Run user-facing tests
-        if: matrix.config.os != 'ubuntu-latest'
         env:
           NOT_CRAN: "true"
           TEST_FILE: ${{ github.workspace }}/R/tests/testthat/test_user_facing.R
         run: |
           Rscript -e "testthat::test_file(Sys.getenv('TEST_FILE'), reporter = 'progress')"
 
-      - name: Run user-facing tests + upload coverage
+      - name: Upload coverage to codecov
         if: matrix.config.os == 'ubuntu-latest'
         env:
           NOT_CRAN: "true"
