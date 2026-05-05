@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.13"]
 
     env:
@@ -50,6 +50,7 @@ jobs:
 
       - name: Install CmdStan
         if: steps.cmdstan-cache.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           uv run python -c "import cmdstanpy; cmdstanpy.install_cmdstan(version='${CMDSTAN_VERSION}', cores=2)"
 
