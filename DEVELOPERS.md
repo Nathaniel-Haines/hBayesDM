@@ -1,6 +1,6 @@
-# CLAUDE.md
+# DEVELOPERS.md
 
-Guidance for Claude (and humans) working in this repo.
+Guidance for developers working in this repo.
 
 ## Repository layout
 

@@ -58,7 +58,7 @@ model: feature branches branch off `develop`, merge back into `develop`, and
 
 ```
 hBayesDM/
-├── CLAUDE.md                  # AI/dev quick reference (toolchain, gotchas)
+├── DEVELOPERS.md              # developer quick reference (toolchain, gotchas)
 ├── CONTRIBUTING.md            # this file
 ├── README.md
 ├── commons/                   # single source of truth shared by R + Python
@@ -213,7 +213,7 @@ straight to Stan as `data`.
 > args[nm] <- list(additional_args[[nm]])    # keeps NULL
 > # args[[nm]] <- NULL                        # would *delete* the entry
 > ```
-> See `CLAUDE.md` for more gotchas.
+> See `DEVELOPERS.md` for more gotchas.
 
 ### Step 6) Regenerate roxygen documentation
 
