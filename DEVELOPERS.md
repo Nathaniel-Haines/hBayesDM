@@ -88,8 +88,28 @@ comment.
 
 ### Stan files
 
-Edit in `commons/stan_files/`. Re-canonicalize with stanc 2.28.2's
-`--print-canonical` if you ever paste in legacy syntax.
+Edit in `commons/stan_files/`. If you paste in legacy Stan syntax (`<-`,
+`increment_log_prob`, `if_else`, etc.), re-canonicalize with stanc's
+`--print-canonical` mode, which rewrites deprecated syntax to current.
+
+Single file:
+
+```bash
+"$(cmdstanr::cmdstan_path())/bin/stanc" \
+  --print-canonical --canonicalize=deprecations \
+  commons/stan_files/<model>.stan > /tmp/out.stan && \
+  mv /tmp/out.stan commons/stan_files/<model>.stan
+```
+
+Whole directory:
+
+```bash
+STANC="$HOME/.cmdstan/$(ls ~/.cmdstan | sort -V | tail -1)/bin/stanc"
+for f in commons/stan_files/*.stan; do
+  "$STANC" --print-canonical --canonicalize=deprecations "$f" > "$f.new" \
+    && mv "$f.new" "$f"
+done
+```
 
 ### R `additional_args`
 
