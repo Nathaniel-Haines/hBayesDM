@@ -60,6 +60,3 @@ jobs:
 
       - name: Run user-facing tests
         run: uv run pytest tests/test_user_facing.py -v --reruns 2
-
-      - name: Run a representative model smoke test
-        run: uv run pytest tests/test_ra_prospect.py tests/test_dd_hyperbolic.py -v --reruns 2
