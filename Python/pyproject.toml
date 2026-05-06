@@ -16,12 +16,12 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
-  "numpy>=2.1",
-  "scipy>=1.14",
-  "pandas>=2.2",
-  "cmdstanpy>=1.2.5",
-  "matplotlib>=3.9",
-  "arviz>=0.20",
+  "numpy>=2.1,<3.0",
+  "scipy>=1.14,<2.0",
+  "pandas>=2.2,<3.0",
+  "cmdstanpy>=1.2.5,<2.0",
+  "matplotlib>=3.9,<4.0",
+  "arviz>=0.20,<1.0",
 ]
 
 [project.urls]
