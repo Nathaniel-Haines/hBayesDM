@@ -131,7 +131,8 @@ choiceRT_lba <- function(data           = "choose",
                          inc_postpred   = FALSE,
                          adapt_delta    = 0.95,
                          stepsize       = 1,
-                         max_treedepth  = 10) {
+                         max_treedepth  = 10,
+                         seed           = 42) {
 
   # Path to .stan model file
   if (modelRegressor) { # model regressors (for model-based neuroimaging, etc.)
@@ -312,6 +313,7 @@ choiceRT_lba <- function(data           = "choose",
     stepsize      = stepsize,
     max_treedepth = max_treedepth,
     ncore         = ncore,
+    seed          = seed,
     inc_postpred  = inc_postpred,
     postpreds     = "y_pred"
   )
