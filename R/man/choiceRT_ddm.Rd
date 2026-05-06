@@ -19,6 +19,7 @@ choiceRT_ddm(
   adapt_delta = 0.95,
   stepsize = 1,
   max_treedepth = 10,
+  seed = 42,
   ...
 )
 }

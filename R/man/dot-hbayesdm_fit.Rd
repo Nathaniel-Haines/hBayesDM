@@ -18,6 +18,7 @@
   stepsize,
   max_treedepth,
   ncore,
+  seed = 42,
   inc_postpred = FALSE,
   postpreds = NULL
 )
