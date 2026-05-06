@@ -3,7 +3,7 @@ scipy>=1.14,<2.0
 pandas>=2.2,<3.0
 matplotlib>=3.9,<4.0
 cmdstanpy>=1.2.5,<2.0
-arviz>=0.20,<1.0
+arviz>=1.1,<2.0
 sphinx
 sphinx-autodoc-typehints
 sphinx-rtd-theme
