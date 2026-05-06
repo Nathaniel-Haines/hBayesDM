@@ -65,17 +65,11 @@ model {
   
   // prior: individual parameters
   lambda_pr ~ normal(0, 1);
-  ;
   theta_pr ~ normal(0, 1);
-  ;
   beta_pr ~ normal(0, 1);
-  ;
   mu0_pr ~ normal(0, 1);
-  ;
   s0_pr ~ normal(0, 1);
-  ;
   sD_pr ~ normal(0, 1);
-  ;
   
   // subject loop and trial loop
   for (i in 1 : N) {
