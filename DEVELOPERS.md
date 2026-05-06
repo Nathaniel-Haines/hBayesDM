@@ -48,6 +48,8 @@ Rscript -e 'roxygen2::roxygenize(".")'                 # regen man/*.Rd + NAMESP
 NOT_CRAN=true Rscript -e 'testthat::test_dir("tests/testthat")'
 NOT_CRAN=true Rscript -e 'testthat::test_file("tests/testthat/test_user_facing.R")'
 Rscript -e 'rmarkdown::render("README.Rmd", output_format = "github_document")'
+Rscript -e 'pkgdown::build_site()'                      # builds full docs site to R/docs/
+Rscript -e 'rmarkdown::render("vignettes/getting_started.Rmd")'  # single vignette
 ```
 
 First-time CmdStan install (R): `Rscript -e 'cmdstanr::install_cmdstan()'`.
@@ -57,13 +59,13 @@ First-time CmdStan install (R): `Rscript -e 'cmdstanr::install_cmdstan()'`.
 Both packages expose the same fitting interface per task model. The result
 object surfaces:
 
-| Attribute (Py) | Slot (R) | Type |
-|---|---|---|
-| `fit` | `$fit` | `CmdStanMCMC` (or `CmdStanVB` when `vb=True`) |
-| `idata` | — | `xarray.DataTree` (arviz) |
-| `all_ind_pars` | `$allIndPars` | `pandas.DataFrame` / `data.frame` |
-| `par_vals` | `$parVals` | dict / list of posterior draws |
-| `model` | `$model` | model name string |
+| Attribute (Py)    | Slot (R)          | Type                                           |
+| ----------------- | ----------------- | ---------------------------------------------- |
+| `fit`             | `$fit`            | `CmdStanMCMC` (or `CmdStanVB` when `vb=True`)  |
+| `idata`           | —                 | `xarray.DataTree` (arviz)                      |
+| `all_ind_pars`    | `$allIndPars`     | `pandas.DataFrame` / `data.frame`              |
+| `par_vals`        | `$parVals`        | dict / list of posterior draws                 |
+| `model`           | `$model`          | model name string                              |
 | `model_regressor` | `$modelRegressor` | dict of regressor arrays (only when requested) |
 
 Diagnostics live in `hbayesdm.diagnostics` (Python) and at top level (R):
@@ -79,7 +81,7 @@ Comments describe **current behavior**, not history. Don't write things like
 instead of Y". If a reader doesn't know what changed, the comment is noise; if
 they do, `git log` / `NEWS.md` is the source of truth.
 
-Single short comments are fine when the *why* is non-obvious (e.g. "Bind
+Single short comments are fine when the _why_ is non-obvious (e.g. "Bind
 `posterior::rhat` locally so cmdstanr's `$summary()` looks it up by value, not
 by name — string lookup would find this function and recurse"). Default to no
 comment.
@@ -110,7 +112,7 @@ variable and pass that — never the string `"rhat"`.
 `cmdstanpy.CmdStanModel.variational()` accepts `inits` only as a perturbation
 scalar (`Optional[float]`), not as dict/JSON. The fit dispatch drops dict
 inits on the VB branch. `CmdStanVB.stan_variables()` returns variational
-*means* by default; pass `mean=False` when you want the n_draws sample matrix
+_means_ by default; pass `mean=False` when you want the n_draws sample matrix
 (used in `idata` construction).
 
 ### Roxygen / NAMESPACE
@@ -176,6 +178,4 @@ per model on first run); skip it during iteration and run it before pushing.
 
 ## Reference docs
 
-- `hbayesdm_2_0_docs_update_plan.md` — staged plan for finishing the docs work
-  (vignettes, migration guide).
 - `R/NEWS.md` — user-facing changelog and 1.x → 2.0 migration notes.
