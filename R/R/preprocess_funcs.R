@@ -519,7 +519,7 @@ hgf_ibrb_preprocess_func <- function(raw_data, general_info,
   y <- array(-1, c(n_subj, t_max))
 
   # Write from raw_data to the data arrays
-  id_map <- setNames(seq_along(unique(subjs)), unique(subjs))
+  id_map <- stats::setNames(seq_along(unique(subjs)), unique(subjs))
   data_length <- nrow(raw_data)
   for (i in 1:data_length) {
     n <- id_map[[ as.character(subjIDs[i]) ]]

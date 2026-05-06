@@ -67,6 +67,9 @@ take on each new iteration. See \bold{Details} below.}
 \item{max_treedepth}{Integer value specifying how many leapfrog steps the MCMC sampler can take
 on each new iteration. See \bold{Details} below.}
 
+\item{seed}{Integer seed used for MCMC sampling and (when applicable) variational inference, to
+make results reproducible. Defaults to \code{42}.}
+
 \item{...}{For this model, it's possible to set \strong{model-specific argument(s)} as follows: 
 \describe{
   \item{trans_prob}{Common state transition probability from Stage (Level) 1 to Stage (Level) 2. Defaults to 0.7.}
@@ -83,7 +86,7 @@ on each new iteration. See \bold{Details} below.}
 \value{
 A class "hBayesDM" object \code{modelData} with the following components:
 \describe{
-  \item{model}{Character value that is the name of the model (\\code{"ts_par6"}).}
+  \item{model}{Character value that is the name of the model (\code{"ts_par6"}).}
   \item{allIndPars}{Data.frame containing the summarized parameter values (as specified by
     \code{indPars}) for each subject.}
   \item{parVals}{List object containing the posterior samples over different parameters.}

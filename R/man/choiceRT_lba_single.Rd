@@ -53,6 +53,8 @@ choiceRT_lba_single(
 \item{stepsize}{Integer value specifying the size of each leapfrog step that the MCMC sampler can take on each new iteration. See \bold{Details} below.}
 
 \item{max_treedepth}{Integer value specifying how many leapfrog steps that the MCMC sampler can take on each new iteration. See \bold{Details} below.}
+
+\item{seed}{Integer seed for MCMC sampling, to make results reproducible. Defaults to \code{42}.}
 }
 \value{
 \code{modelData}  A class \code{'hBayesDM'} object with the following components:

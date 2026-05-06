@@ -50,6 +50,8 @@
 #'   take on each new iteration. See \bold{Details} below.
 #' @param max_treedepth Integer value specifying how many leapfrog steps the MCMC sampler can take
 #'   on each new iteration. See \bold{Details} below.
+#' @param seed Integer seed used for MCMC sampling and (when applicable) variational inference, to
+#'   make results reproducible. Defaults to \code{42}.
 #' @param ...
 #'   <% AA_T1 <- "For this model, it's possible to set \\strong{model-specific argument(s)} " %>
 #'   <% AA_T2 <- "as follows: " %>
@@ -70,7 +72,7 @@
 #'
 #' @return A class "hBayesDM" object \code{modelData} with the following components:
 #' \describe{
-#'   \item{model}{Character value that is the name of the model (\\code{"<%= MODEL_FUNCTION %>"}).}
+#'   \item{model}{Character value that is the name of the model (\code{"<%= MODEL_FUNCTION %>"}).}
 #'   \item{allIndPars}{Data.frame containing the summarized parameter values (as specified by
 #'     \code{indPars}) for each subject.}
 #'   \item{parVals}{List object containing the posterior samples over different parameters.}

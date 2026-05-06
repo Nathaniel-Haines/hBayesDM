@@ -67,12 +67,15 @@ take on each new iteration. See \bold{Details} below.}
 \item{max_treedepth}{Integer value specifying how many leapfrog steps the MCMC sampler can take
 on each new iteration. See \bold{Details} below.}
 
+\item{seed}{Integer seed used for MCMC sampling and (when applicable) variational inference, to
+make results reproducible. Defaults to \code{42}.}
+
 \item{...}{For this model, there is no model-specific argument.}
 }
 \value{
 A class "hBayesDM" object \code{modelData} with the following components:
 \describe{
-  \item{model}{Character value that is the name of the model (\\code{"dd_hyperbolic_single"}).}
+  \item{model}{Character value that is the name of the model (\code{"dd_hyperbolic_single"}).}
   \item{allIndPars}{Data.frame containing the summarized parameter values (as specified by
     \code{indPars}) for each subject.}
   \item{parVals}{List object containing the posterior samples over different parameters.}

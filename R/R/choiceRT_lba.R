@@ -25,6 +25,7 @@
 #' @param adapt_delta Floating point number representing the target acceptance probability of a new sample in the MCMC chain. Must be between 0 and 1. See \bold{Details} below.
 #' @param stepsize Integer value specifying the size of each leapfrog step that the MCMC sampler can take on each new iteration. See \bold{Details} below.
 #' @param max_treedepth Integer value specifying how many leapfrog steps that the MCMC sampler can take on each new iteration. See \bold{Details} below.
+#' @param seed Integer seed for MCMC sampling, to make results reproducible. Defaults to \code{42}.
 #'
 #' @return \code{modelData}  A class \code{'hBayesDM'} object with the following components:
 #' \describe{
