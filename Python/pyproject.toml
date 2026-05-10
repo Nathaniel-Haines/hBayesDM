@@ -37,6 +37,8 @@ dev = [
   "sphinx>=8",
   "sphinx-autodoc-typehints>=2.5",
   "sphinx-rtd-theme>=3",
+  # Codegen pipeline (commons/convert-to-{r,py}.py).
+  "pyyaml>=6",
 ]
 
 [build-system]

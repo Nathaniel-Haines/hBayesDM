@@ -178,8 +178,9 @@ cd commons
 bash generate-codes.sh
 ```
 
-Requires Python 3.5+ with `pyyaml` (`pip install pyyaml`, or just rely on
-`Python/.venv` if you've already run `uv sync` in `Python/`).
+Requires `pyyaml`, which is part of the dev dependency group in
+`Python/pyproject.toml` — running `uv sync` in `Python/` installs it
+into `Python/.venv` and `bash generate-codes.sh` will pick it up.
 
 The script:
 
