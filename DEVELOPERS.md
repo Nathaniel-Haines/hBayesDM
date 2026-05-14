@@ -2,6 +2,49 @@
 
 Guidance for developers working in this repo.
 
+## Quickstart
+
+A minimal end-to-end dev setup. Assumes you already have R ≥ 4.4,
+Python ≥ 3.13, [`uv`](https://docs.astral.sh/uv/), and CmdStan installed
+(see [Toolchain](#toolchain) and the CmdStan install commands in
+[Common commands](#common-commands)).
+
+```bash
+git clone https://github.com/CCS-Lab/hBayesDM.git
+cd hBayesDM
+```
+
+### Python
+
+```bash
+cd Python
+uv sync --all-groups
+uv run pytest tests/test_ra_prospect.py -x
+```
+
+- `uv sync` must run from `Python/` — that's where `pyproject.toml` lives.
+  Running it from the repo root has no project to sync.
+- `--all-groups` installs the PEP 735 dev group (`pytest`, `ruff`, etc.),
+  not just runtime deps. Without it, `pytest` won't be in the venv.
+- The smoke test fits one model end-to-end in ~10s and is the fastest way
+  to confirm both `hbayesdm` and CmdStan are wired up.
+
+### R
+
+```bash
+cd ../R
+R CMD INSTALL --no-docs --no-test-load .
+NOT_CRAN=true Rscript -e 'testthat::test_file("tests/testthat/test_ra_prospect.R")'
+```
+
+- `--no-docs --no-test-load` skips two slow steps you don't need for
+  inner-loop work (only matters when regenerating man pages or releasing).
+- `NOT_CRAN=true` is required: per-model tests are gated by `skip_on_cran()`
+  so CRAN check machines don't fit Stan models. Without it the test silently
+  skips and reports `PASS 0`.
+
+Once both smoke tests pass, you have a working dev environment.
+
 ## Repository layout
 
 - `R/` — R package (cmdstanr backend).
