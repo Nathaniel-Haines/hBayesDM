@@ -227,10 +227,13 @@ This rewrites `R/man/<your-model>.Rd` and `R/NAMESPACE` from the roxygen
 tags in your generated `R/R/<model>.R`. **Never hand-edit the `.Rd` files
 or `NAMESPACE`** — they'll be overwritten on the next regenerate.
 
-If roxygen errors, double-check that every `@templateVar` line in the
-generated R file has a value (empty `@templateVar X` lines cause errors with
-roxygen2 ≥ 8.0). The shared template at `R/man-roxygen/model-documentation.R`
-uses `get0()` so missing-but-not-empty templateVars degrade gracefully.
+Background (you shouldn't need to act on this): roxygen2 ≥ 8.0 errors on
+empty `@templateVar X` lines. `commons/convert-to-r.py` strips them before
+writing the file, and the shared template at
+`R/man-roxygen/model-documentation.R` uses `get0()` so the resulting
+*missing* (rather than empty) templateVars degrade gracefully. If you ever
+see this error in practice, regenerate with `bash commons/generate-codes.sh`
+rather than hand-editing.
 
 ### Step 7) Install and test
 
