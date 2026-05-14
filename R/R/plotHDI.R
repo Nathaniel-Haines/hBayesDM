@@ -36,7 +36,7 @@ plotHDI <- function(sample   = NULL,
                ggplot2::theme_bw() +
                geom_histogram(aes(y = ..density..), colour = "black", fill = "grey", bins = binSize, ...) +
                ggtitle(Title) + xlab(xLab) + ylab(yLab) +
-               geom_segment(aes(x = HDI[1], y = 0, xend = HDI[2], yend = 0), size = 1.5, colour = "red") +
+               geom_segment(aes(x = HDI[1], y = 0, xend = HDI[2], yend = 0), linewidth = 1.5, colour = "red") +
                theme(axis.text.x = ggplot2::element_text(size = fontSize)) +
                theme(axis.text.y = ggplot2::element_text(size = fontSize)) +
                theme(axis.title.y = ggplot2::element_text(size = fontSize)) +
