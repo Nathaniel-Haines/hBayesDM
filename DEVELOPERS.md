@@ -166,6 +166,15 @@ boilerplate that appears on every task model's man page.
   across arviz minor versions until the post-1.0 split stabilizes. Test
   against the version in `pyproject.toml` / `requirements.txt`, not against
   whatever's on PyPI.
+- **`devtools` install fails on `ragg` (macOS)**: if you want the
+  `devtools::load_all()` / `devtools::test()` iteration loop (no
+  `R CMD INSTALL` between edits), `ragg` needs system image libs first:
+  ```bash
+  brew install freetype libpng libtiff jpeg-turbo webp harfbuzz fribidi
+  Rscript -e 'install.packages(c("ragg","pkgdown","devtools"), repos="https://cloud.r-project.org/")'
+  ```
+  Optional — `R CMD INSTALL --no-docs --no-test-load .` works without any of
+  this.
 
 ## Workflows with Claude Code
 

@@ -99,8 +99,8 @@ def rdt_happiness(
     correctly and contain the information below:
 
     - "subjID": A unique identifier for each subject in the data-set.
-    - "gain": Possible (50\%) gain outcome of a risky option (e.g. 9).
-    - "loss": Possible (50\%) loss outcome of a risky option (e.g. 5, or -5).
+    - "gain": Possible (50%) gain outcome of a risky option (e.g. 9).
+    - "loss": Possible (50%) loss outcome of a risky option (e.g. 5, or -5).
     - "cert": Guaranteed amount of a safe option.
     - "type": loss == -1, mixed == 0, gain == 1
     - "gamble": If gamble was taken, gamble == 1; else gamble == 0.

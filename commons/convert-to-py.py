@@ -206,6 +206,10 @@ def main(info_fn):
                 info['additional_args']),
         )
 
+    # YAML carries `\%` for R Rd output; Python treats it as an invalid
+    # escape in docstrings.
+    docstring_template = docstring_template.replace('\\%', '%')
+
     # Read template for model python code
     with open(TEMPLATE_CODE, 'r') as f:
         code_template = f.read().format(
