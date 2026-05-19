@@ -120,8 +120,8 @@ hBayesDM_model <- function(task_name = "",
            ncore          = 1,
            nthin          = 1,
            inits          = "vb",
-           indPars        = "mean",
-           modelRegressor = FALSE,
+           ind_pars        = "mean",
+           model_regressor = FALSE,
            vb             = FALSE,
            inc_postpred   = FALSE,
            adapt_delta    = 0.95,
@@ -133,7 +133,7 @@ hBayesDM_model <- function(task_name = "",
     ############### Stop checks ###############
 
     # Check if regressor available for this model
-    if (modelRegressor && is.null(regressors)) {
+    if (model_regressor && is.null(regressors)) {
       stop("** Model-based regressors are not available for this model. **\n")
     }
 
@@ -301,7 +301,7 @@ hBayesDM_model <- function(task_name = "",
       pars <- c(pars, paste0("logit_", names(parameters)))
     }
     pars <- c(pars, "log_lik")
-    if (modelRegressor) {
+    if (model_regressor) {
       pars <- c(pars, names(regressors))
     }
     if (inc_postpred) {
@@ -380,7 +380,7 @@ hBayesDM_model <- function(task_name = "",
     }
 
     # When extracting model-based regressors
-    if (modelRegressor) {
+    if (model_regressor) {
       cat("\n")
       cat("**************************************\n")
       cat("**  Extract model-based regressors  **\n")
@@ -511,30 +511,30 @@ hBayesDM_model <- function(task_name = "",
       postpreds     = postpreds
     )
     fit <- fit_result$fit
-    parVals <- fit_result$par_vals
+    par_vals <- fit_result$par_vals
 
     # Define measurement of individual parameters
-    measure_indPars <- switch(indPars, mean = mean, median = median, mode = estimate_mode)
+    measure_ind_pars <- switch(ind_pars, mean = mean, median = median, mode = estimate_mode)
 
     # Define which individual parameters to measure
-    which_indPars <- names(parameters)
+    which_ind_pars <- names(parameters)
     if ((task_name == "dd") && (model_type == "single")) {
-      which_indPars <- c(which_indPars, log_parameter1)
+      which_ind_pars <- c(which_ind_pars, log_parameter1)
     }
 
     # Measure all individual parameters (per subject)
     compute_individual_params <- function(x, i = NULL) {
-      a <- parVals[[x]]
+      a <- par_vals[[x]]
       d <- dim(a)
       if (model_type == "single") {
         if (is.null(d) || length(d) == 1) {
-          val <- measure_indPars(a) # real typed parameter
+          val <- measure_ind_pars(a) # real typed parameter
           names(val) <- x
           return(val)
         } else if (length(d) == 2) {
           param_cnt <- ncol(a)
           if (param_cnt == 0) return(numeric(0))
-          val <- apply(a, 2, measure_indPars) # vector typed parameter (multiple parameters for single subject)
+          val <- apply(a, 2, measure_ind_pars) # vector typed parameter (multiple parameters for single subject)
           names(val) <- paste0(x, "[", seq_along(val), "]")
           return(val)
         }
@@ -543,7 +543,7 @@ hBayesDM_model <- function(task_name = "",
         if (length(d) == 2) {
           param_cnt <- d[2]
           if (param_cnt == 0) return(numeric(0))
-          val <- measure_indPars(a[, i]) # vector typed parameter (one for each subject)
+          val <- measure_ind_pars(a[, i]) # vector typed parameter (one for each subject)
           names(val) <- x
           return(val)
         } else if (length(d) == 3) {
@@ -551,7 +551,7 @@ hBayesDM_model <- function(task_name = "",
           if (param_cnt == 0) return(numeric(0))
           slice <- a[, i, , drop = TRUE]
           if (is.null(dim(slice))) slice <- cbind(slice)
-          vals <- apply(slice, 2L, measure_indPars)
+          vals <- apply(slice, 2L, measure_ind_pars)
           names(vals) <- paste0(x, "[", seq_along(vals), "]")
           return(vals)
         }
@@ -560,24 +560,25 @@ hBayesDM_model <- function(task_name = "",
     }
 
     if (model_type == "single") {
-      first_row_param <- unlist(lapply(which_indPars, compute_individual_params), use.names = TRUE)
-      allIndPars <- as.data.frame(t(first_row_param), check.names = FALSE)
-      allIndPars <- cbind(subjID = subjs[1], allIndPars, row.names = NULL)
+      first_row_param <- unlist(lapply(which_ind_pars, compute_individual_params), use.names = TRUE)
+      all_ind_pars <- as.data.frame(t(first_row_param), check.names = FALSE)
+      all_ind_pars <- cbind(subjID = subjs[1], all_ind_pars, row.names = NULL)
     } else {
-      first_subj_params <- unlist(lapply(which_indPars, function(x) compute_individual_params(x, i = 1)), use.names = TRUE)
+      first_subj_params <- unlist(lapply(which_ind_pars, function(x) compute_individual_params(x, i = 1)), use.names = TRUE)
       rows <- lapply(seq_len(n_subj), function(i) {
-        unlist(lapply(which_indPars, function(x) compute_individual_params(x, i = i)), use.names = TRUE)
+        unlist(lapply(which_ind_pars, function(x) compute_individual_params(x, i = i)), use.names = TRUE)
       })
       mat <- do.call(rbind, rows)
       colnames(mat) <- names(first_subj_params)
-      allIndPars <- cbind(subjID = subjs, as.data.frame(mat, check.names = FALSE), row.names = NULL)
+      all_ind_pars <- cbind(subjID = subjs, as.data.frame(mat, check.names = FALSE), row.names = NULL)
     }
 
     # Model regressors (for model-based neuroimaging, etc.)
-    if (modelRegressor) {
-      model_regressor <- list()
+    regressor_list <- NULL
+    if (model_regressor) {
+      regressor_list <- list()
       for (r in names(regressors)) {
-        model_regressor[[r]] <- apply(parVals[[r]], c(1:regressors[[r]]) + 1, measure_indPars)
+        regressor_list[[r]] <- apply(par_vals[[r]], c(1:regressors[[r]]) + 1, measure_ind_pars)
       }
     }
 
@@ -586,18 +587,18 @@ hBayesDM_model <- function(task_name = "",
     raw_data <- as.data.frame(raw_data)
 
     # Wrap up data into a list
-    modelData                   <- list()
-    modelData$model             <- model
-    modelData$allIndPars        <- allIndPars
-    modelData$parVals           <- parVals
-    modelData$fit               <- fit
-    modelData$rawdata           <- raw_data
-    if (modelRegressor) {
-      modelData$modelRegressor  <- model_regressor
+    model_data                   <- list()
+    model_data$model             <- model
+    model_data$all_ind_pars        <- all_ind_pars
+    model_data$par_vals           <- par_vals
+    model_data$fit               <- fit
+    model_data$raw_data           <- raw_data
+    if (model_regressor) {
+      model_data$model_regressor <- regressor_list
     }
 
     # Object class definition
-    class(modelData) <- "hBayesDM"
+    class(model_data) <- "hBayesDM"
 
     # Inform user of completion
     cat("\n")
@@ -605,7 +606,7 @@ hBayesDM_model <- function(task_name = "",
     cat("**** Model fitting is complete! ****\n")
     cat("************************************\n")
 
-    return(modelData)
+    return(model_data)
   }
 }
 

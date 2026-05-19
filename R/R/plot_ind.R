@@ -21,16 +21,16 @@
 #' plot(output)
 #'
 #' # Plot individual 'k' (discounting rate) parameters
-#' plotInd(output, "k")
+#' plot_ind(output, "k")
 #'
 #' # Plot individual 'beta' (inverse temperature) parameters
-#' plotInd(output, "beta")
+#' plot_ind(output, "beta")
 #'
 #' # Plot individual 'beta' parameters but don't show density
-#' plotInd(output, "beta", show_density = F)
+#' plot_ind(output, "beta", show_density = F)
 #' }
 
-plotInd <- function(obj = NULL,
+plot_ind <- function(obj = NULL,
                     pars,
                     show_density = T, ...) {
 

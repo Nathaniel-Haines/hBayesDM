@@ -64,29 +64,29 @@ def print_fit(*args: TaskModel) -> pd.DataFrame:
     return az.compare({m.model: m.idata for m in args})
 
 
-def hdi(x: np.ndarray, prob: float = 0.94) -> np.ndarray:
+def hdi(x: np.ndarray, ci_prob: float = 0.95) -> np.ndarray:
     """Compute the highest density interval (HDI) of a posterior sample.
 
     Thin wrapper around ``arviz.hdi``. The HDI is the shortest interval
-    containing ``prob`` of the posterior mass.
+    containing ``ci_prob`` of the posterior mass.
 
     Parameters
     ----------
     x
         1-D array of posterior draws.
-    prob
-        Credible mass to enclose. Defaults to 0.94.
+    ci_prob
+        Credible mass to enclose. Defaults to 0.95.
 
     Returns
     -------
     numpy.ndarray
         Length-2 array ``[lower, upper]`` giving the HDI bounds.
     """
-    return az.hdi(x, prob=prob)
+    return az.hdi(x, prob=ci_prob)
 
 
 def plot_hdi(x: np.ndarray,
-             prob: float = 0.94,
+             ci_prob: float = 0.95,
              title: str = None,
              xlabel: str = 'Value',
              ylabel: str = 'Density',
@@ -98,8 +98,8 @@ def plot_hdi(x: np.ndarray,
     ----------
     x
         1-D array of posterior draws.
-    prob
-        HDI credible mass. Defaults to 0.94.
+    ci_prob
+        HDI credible mass. Defaults to 0.95.
     title, xlabel, ylabel
         Optional axis labels and title.
     point_estimate
@@ -111,7 +111,7 @@ def plot_hdi(x: np.ndarray,
     idata = az.from_dict({'posterior': {'x': np.asarray(x)[None, ...]}})
     az.plot_dist(idata,
                  var_names=['x'],
-                 ci_prob=prob,
+                 ci_prob=ci_prob,
                  point_estimate=point_estimate,
                  **kwargs)
     ax = plt.gca()

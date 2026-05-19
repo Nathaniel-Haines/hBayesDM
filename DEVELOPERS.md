@@ -106,14 +106,14 @@ object surfaces:
 | ----------------- | ----------------- | ---------------------------------------------- |
 | `fit`             | `$fit`            | `CmdStanMCMC` (or `CmdStanVB` when `vb=True`)  |
 | `idata`           | —                 | `xarray.DataTree` (arviz)                      |
-| `all_ind_pars`    | `$allIndPars`     | `pandas.DataFrame` / `data.frame`              |
-| `par_vals`        | `$parVals`        | dict / list of posterior draws                 |
+| `all_ind_pars`    | `$all_ind_pars`   | `pandas.DataFrame` / `data.frame`              |
+| `par_vals`        | `$par_vals`       | dict / list of posterior draws                 |
 | `model`           | `$model`          | model name string                              |
-| `model_regressor` | `$modelRegressor` | dict of regressor arrays (only when requested) |
+| `model_regressor` | `$model_regressor`| dict of regressor arrays (only when requested) |
 
 Diagnostics live in `hbayesdm.diagnostics` (Python) and at top level (R):
-`rhat`, `print_fit`/`printFit`, `extract_ic`, `hdi`/`HDIofMCMC`,
-`plot_hdi`/`plotHDI`, `plot_ind`/`plotInd`.
+`rhat`, `print_fit`, `extract_ic`, `hdi`, `plot_hdi`, `plot_ind`. Both
+packages now use the same snake_case names.
 
 ## Conventions
 

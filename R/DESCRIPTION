@@ -42,7 +42,6 @@ License: GPL-3
 NeedsCompilation: no
 Encoding: UTF-8
 Collate:
-    'HDIofMCMC.R'
     'preprocess_funcs.R'
     'fit_cmdstan.R'
     'settings.R'
@@ -85,6 +84,7 @@ Collate:
     'gng_m3.R'
     'gng_m4.R'
     'hBayesDM.R'
+    'hdi.R'
     'hgf_ibrb.R'
     'hgf_ibrb_single.R'
     'igt_orl.R'
@@ -94,10 +94,10 @@ Collate:
     'multiplot.R'
     'peer_ocu.R'
     'plot.hBayesDM.R'
-    'plotDist.R'
-    'plotHDI.R'
-    'plotInd.R'
-    'printFit.R'
+    'plot_dist.R'
+    'plot_hdi.R'
+    'plot_ind.R'
+    'print_fit.R'
     'prl_ewa.R'
     'prl_fictitious.R'
     'prl_fictitious_multipleB.R'

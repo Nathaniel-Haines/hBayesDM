@@ -29,11 +29,11 @@ rhat <- function(fit = NULL, less = NULL) {
   # this function and recurse).
   rhat_fn <- posterior::rhat
   summary_df <- fit$fit$summary(variables = NULL, rhat = rhat_fn)
-  rhatData <- data.frame(Rhat = summary_df$rhat,
+  rhat_data <- data.frame(Rhat = summary_df$rhat,
                          row.names = summary_df$variable)
 
   if (!is.null(less)) {
-    if (all(rhatData$Rhat <= less, na.rm = TRUE)) {
+    if (all(rhat_data$Rhat <= less, na.rm = TRUE)) {
       cat("TRUE: All Rhat values are less than ", less, "\n", sep = "")
       return(TRUE)
     } else {
@@ -41,5 +41,5 @@ rhat <- function(fit = NULL, less = NULL) {
       return(FALSE)
     }
   }
-  rhatData
+  rhat_data
 }

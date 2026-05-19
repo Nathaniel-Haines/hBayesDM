@@ -191,14 +191,14 @@ When fitting is complete:
 `output1` is an object of class `hBayesDM` with these fields:
 
 1. `model`: Name of the fitted model (`output1$model` is `"gng_m1"`).
-2. `allIndPars`: Per-subject parameter summaries (default: _mean_). Use `indPars = "median"` or `indPars = "mode"` to change the summary statistic.
-3. `parVals`: Posterior draws as a named list, extracted via `posterior::draws_of()`. **Hyper-parameters are prefixed `mu_` (e.g., `mu_xi`, `mu_ep`, `mu_rho`).**
+2. `all_ind_pars`: Per-subject parameter summaries (default: _mean_). Use `ind_pars = "median"` or `ind_pars = "mode"` to change the summary statistic.
+3. `par_vals`: Posterior draws as a named list, extracted via `posterior::draws_of()`. **Hyper-parameters are prefixed `mu_` (e.g., `mu_xi`, `mu_ep`, `mu_rho`).**
 4. `fit`: A `CmdStanMCMC` object (or `CmdStanVB` when `vb = TRUE`) from cmdstanr. Use `output1$fit$summary()`, `output1$fit$draws()`, `output1$fit$diagnostic_summary()`, etc. — see [`?cmdstanr::CmdStanMCMC`](https://mc-stan.org/cmdstanr/reference/CmdStanMCMC.html).
-5. `rawdata`: Raw trial-by-trial data used for modeling. Provided so users can easily compare trial-by-trial model-based regressors (e.g., prediction errors) against the choice data.
-6. `modelRegressor` (optional): Trial-by-trial model-based regressors such as prediction errors and chosen-option values. Each model ships with a pre-selected set.
+5. `raw_data`: Raw trial-by-trial data used for modeling. Provided so users can easily compare trial-by-trial model-based regressors (e.g., prediction errors) against the choice data.
+6. `model_regressor` (optional): Trial-by-trial model-based regressors such as prediction errors and chosen-option values. Each model ships with a pre-selected set.
 
 ```
-> output1$allIndPars
+> output1$all_ind_pars
            xi        ep      rho subjID
 1  0.03688558 0.1397615 5.902901      1
 2  0.02934812 0.1653435 6.066120      2
@@ -245,30 +245,30 @@ plot(output1, type="simple")  # bayesplot::mcmc_intervals
 plot(output1)                 # type="dist" — per-model density plots
 ```
 
-To inspect individual subjects, use `plotInd()` (built on `bayesplot::mcmc_areas` / `mcmc_intervals`). For example, each subject's $\epsilon$ (learning rate) posterior:
+To inspect individual subjects, use `plot_ind()` (built on `bayesplot::mcmc_areas` / `mcmc_intervals`). For example, each subject's $\epsilon$ (learning rate) posterior:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, fig.height=5, fig.width=8}
-plotInd(output1, "ep")
+plot_ind(output1, "ep")
 ```
 
 You can also call `rhat(output1)` to get a data.frame of Rhat values, or `rhat(output1, less = 1.05)` to get a `TRUE`/`FALSE` summary check.
 
 <!--
-Their posterior means are also stored in `OUTPUT_object$allIndPars`:
+Their posterior means are also stored in `OUTPUT_object$all_ind_pars`:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-output1$allIndPars
+output1$all_ind_pars
 ```
 -->
 
 
 ### 4) Compare models (and groups)
 
-To compare models, you first fit all models in the same manner as the example above (e.g., `output4 = gng_m4("example", niter=2000, nwarmup=1000, nchain=4, ncore=4)` ). Next, we use the command `printFit`, which is a convenient way to summarize Leave-One-Out Information Criterion (LOOIC) or Widely Applicable Information Criterion (WAIC) of all models we consider (see @vehtari2015e for the details of LOOIC and WAIC). By default, `printFit` function uses the LOOIC which is preferable to the WAIC when there are influential observations [@vehtari2015e].
+To compare models, you first fit all models in the same manner as the example above (e.g., `output4 = gng_m4("example", niter=2000, nwarmup=1000, nchain=4, ncore=4)` ). Next, we use the command `print_fit`, which is a convenient way to summarize Leave-One-Out Information Criterion (LOOIC) or Widely Applicable Information Criterion (WAIC) of all models we consider (see @vehtari2015e for the details of LOOIC and WAIC). By default, `print_fit` function uses the LOOIC which is preferable to the WAIC when there are influential observations [@vehtari2015e].
 
 Assuming four models' outputs are `output1` (gng_m1), `output2` (gng_m2), `output3` (gng_m3), and `output4` (gng_m4), their model fits can be simultaneously summarized by:
 
 ```
-> printFit(output1, output2, output3, output4)
+> print_fit(output1, output2, output3, output4)
    Model    LOOIC
 1 gng_m1 1588.843
 2 gng_m2 1571.129
@@ -276,7 +276,7 @@ Assuming four models' outputs are `output1` (gng_m1), `output2` (gng_m2), `outpu
 4 gng_m4 1543.335
 ```
 
-Note that the lower LOOIC is, the better its model-fit is. Thus, model#4 has the best LOOIC compared to other models. Users can print WAIC or both by calling `printFit(output1, output2, output3, output4, ic="waic")` or `printFit(output1, output2, output3, output4, ic="both")`. Use the `extract_ic` function (e.g., `extract_ic(output3)` ) if you want more detailed information including standard errors and expected log pointwise predictive density (elpd). Note that the `extract_ic` function can be used only for a single model output.
+Note that the lower LOOIC is, the better its model-fit is. Thus, model#4 has the best LOOIC compared to other models. Users can print WAIC or both by calling `print_fit(output1, output2, output3, output4, ic="waic")` or `print_fit(output1, output2, output3, output4, ic="both")`. Use the `extract_ic` function (e.g., `extract_ic(output3)` ) if you want more detailed information including standard errors and expected log pointwise predictive density (elpd). Note that the `extract_ic` function can be used only for a single model output.
 
 We also want to remind you that there are multiple ways to compare computational models (e.g., simulation method (absolute model performance), parameter recovery, generalization criterion) and the goodness of fit (e.g., LOOIC or WAIC) is just one of them. Check if predictions from your model (e.g., "posterior predictive check") can mimic the data (same data or new data) with reasonable accuracy. See @kruschke2014doing (for posterior predictive check), Guitart-Masip et al. (2012) (for goodness of fit and simulation performance on the orthogonalized Go/Nogo task), and @Busemeyer2000a (for generalization criterion) as well as Ahn et al. (2008; 2014) and @steingroever2014absolute (for the combination of multiple model comparison methods).
 
@@ -292,9 +292,9 @@ output_group2 = gng_m4(data_group2)  # fit group2 data with the gng_m4 model
 ## After model fitting is complete for both groups,
 ## evaluate the group difference (e.g., on the 'pi' parameter) by examining the posterior distribution of group mean differences.
 
-diffDist = output_group1$parVals$mu_pi - output_group2$parVals$mu_pi  # group1 - group2
-HDIofMCMC( diffDist )  # Compute the 95% Highest Density Interval (HDI).
-plotHDI( diffDist )    # plot the group mean differences
+diffDist = output_group1$par_vals$mu_pi - output_group2$par_vals$mu_pi  # group1 - group2
+hdi( diffDist )  # Compute the 95% Highest Density Interval (HDI).
+plot_hdi( diffDist )    # plot the group mean differences
 ```
 
 
@@ -307,7 +307,7 @@ The biggest challenge for performing model-based fMRI/EEG is to learn how to ext
 The hBayesDM package currently provides the following model-based regressors. With the trial-by-trial regressors, users can easily use their favorite neuroimaging package (e.g., in Statistical Parametric Mapping (SPM; http://www.fil.ion.ucl.ac.uk/spm/) to perform model-based fMRI analysis. See our [paper](https://www.mitpressjournals.org/doi/abs/10.1162/CPSY_a_00002) (**Extracting Trial-by-Trial Regressors for Model-Based fMRI/EEG Analysis**) for more details.
 
 
-As an example, if you would like to extract trial-by-trial stimulus values (i.e., expected value of stimulus on each trial), first fit a model like the following (set the `modelRegressor` input variable to `TRUE`. Its default value is `FALSE`):
+As an example, if you would like to extract trial-by-trial stimulus values (i.e., expected value of stimulus on each trial), first fit a model like the following (set the `model_regressor` input variable to `TRUE`. Its default value is `FALSE`):
 
 ```{r echo=FALSE}
 #load("~/Dropbox/Public/modelRegressorSaved_m3.RData")
@@ -316,7 +316,7 @@ As an example, if you would like to extract trial-by-trial stimulus values (i.e.
 
 ```{r eval=FALSE}
 ## fit example data with the gng_m3 model
-output3 = gng_m3(data="example", niter=2000, nwarmup=1000, modelRegressor=TRUE)
+output3 = gng_m3(data="example", niter=2000, nwarmup=1000, model_regressor=TRUE)
 ```
 
 ```{r echo=FALSE}
@@ -325,19 +325,19 @@ if (file.exists(file_output3)) {
   load(file_output3)
 } else {
   output3 = gng_m3(data="example", niter=2000, nwarmup=1000, nchain=4, ncore=4,
-                  modelRegressor=TRUE)
+                  model_regressor=TRUE)
   save(output3, file = file_output3)
 }
 ```
 
 
-Once the sampling is completed, all model-based regressors are contained in the `modelRegressor` list.
+Once the sampling is completed, all model-based regressors are contained in the `model_regressor` list.
 
 ```{r eval=TRUE}
 ## store all subjects' stimulus value (SV) in ‘sv_all’
-sv_all = output3$modelRegressor$SV
+sv_all = output3$model_regressor$SV
 
-dim(output3$modelRegressor$SV)  # number of rows=# of subjects (=10), number of columns=# of trials (=240)
+dim(output3$model_regressor$SV)  # number of rows=# of subjects (=10), number of columns=# of trials (=240)
 
 ## visualize SV (Subject #1)
 plot(sv_all[1, ], type="l", xlab="Trial", ylab="Stimulus Value (subject #1)")
@@ -367,31 +367,31 @@ MCMC arguments (`nchain`, `niter`, `nthin`, `nwarmup`) don't apply when `vb = TR
 
 Simply put, _posterior predictive checks_ refer to when a fitted model is used to generate simulated data and check if simulated data are similar to the actual data. Posterior predictive checks are useful in assessing if a model generates valid predictions.
 
-From v0.5.0, users can run posterior predictive checks on all models except drift-diffusion models in hBayesDM. Simulated data from posterior predictive checks are contained in `hBayesDM_OUTPUT$parVals$y_pred`. In a future release, we will include a function/command that can conveniently summarize and plot posterior predictive checks. In the mean time, users can program their own codes like the following:
+From v0.5.0, users can run posterior predictive checks on all models except drift-diffusion models in hBayesDM. Simulated data from posterior predictive checks are contained in `hBayesDM_OUTPUT$par_vals$y_pred`. In a future release, we will include a function/command that can conveniently summarize and plot posterior predictive checks. In the mean time, users can program their own codes like the following:
 
 ```{r eval=FALSE}
 ## fit example data with the gng_m3 model and run posterior predictive checks
 x = gng_m3(data="example", niter=2000, nwarmup=1000, nchain=4, ncore=4, inc_postpred = TRUE)
 
-## dimension of x$parVals$y_pred
-dim(x$parVals$y_pred)   # y_pred --> 4000 (MCMC samples) x 10 (subjects) x 240 (trials)
+## dimension of x$par_vals$y_pred
+dim(x$par_vals$y_pred)   # y_pred --> 4000 (MCMC samples) x 10 (subjects) x 240 (trials)
 [1] 4000  10  240
 
-y_pred_mean = apply(x$parVals$y_pred, c(2,3), mean)  # average of 4000 MCMC samples
+y_pred_mean = apply(x$par_vals$y_pred, c(2,3), mean)  # average of 4000 MCMC samples
 
 dim(y_pred_mean)  # y_pred_mean --> 10 (subjects) x 240 (trials)
 [1]  10 240
 
-numSubjs = dim(x$allIndPars)[1]  # number of subjects
+numSubjs = dim(x$all_ind_pars)[1]  # number of subjects
 
-subjList = unique(x$rawdata$subjID)  # list of subject IDs
-maxT = max(table(x$rawdata$subjID))  # maximum number of trials
+subjList = unique(x$raw_data$subjID)  # list of subject IDs
+maxT = max(table(x$raw_data$subjID))  # maximum number of trials
 true_y = array(NA, c(numSubjs, maxT)) # true data (`true_y`)
 
 ## true data for each subject
 for (i in 1:numSubjs) {
   tmpID = subjList[i]
-  tmpData = subset(x$rawdata, subjID == tmpID)
+  tmpData = subset(x$raw_data, subjID == tmpID)
   true_y[i, ] = tmpData$keyPressed  # only for data with a 'choice' column
 }
 

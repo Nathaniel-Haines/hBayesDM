@@ -26,9 +26,9 @@
 #'   high.
 #' @param inits Character value specifying how the initial values should be generated.
 #'   Possible options are "vb" (default), "fixed", "random", or your own initial values.
-#' @param indPars Character value specifying how to summarize individual parameters. Current options
+#' @param ind_pars Character value specifying how to summarize individual parameters. Current options
 #'   are: "mean", "median", or "mode".
-#' @param modelRegressor
+#' @param model_regressor
 #'   <% .regressors <- get0("REGRESSORS", ifnotfound = NA) %>
 #'   <% EXISTS_REGRESSORS <- paste0("For this model they are: ", .regressors, ".") %>
 #'   <% NOT_EXISTS_REGRESSORS <- "Not available for this model." %>
@@ -70,18 +70,18 @@
 #'     <%= get0("ADDITIONAL_ARGS_9") %>
 #'   <%= ifelse(as.integer(LENGTH_ADDITIONAL_ARGS) > 0, "}", "") %>
 #'
-#' @return A class "hBayesDM" object \code{modelData} with the following components:
+#' @return A class "hBayesDM" object \code{model_data} with the following components:
 #' \describe{
 #'   \item{model}{Character value that is the name of the model (\code{"<%= MODEL_FUNCTION %>"}).}
-#'   \item{allIndPars}{Data.frame containing the summarized parameter values (as specified by
-#'     \code{indPars}) for each subject.}
-#'   \item{parVals}{List object containing the posterior samples over different parameters.}
+#'   \item{all_ind_pars}{Data.frame containing the summarized parameter values (as specified by
+#'     \code{ind_pars}) for each subject.}
+#'   \item{par_vals}{List object containing the posterior samples over different parameters.}
 #'   \item{fit}{A \code{CmdStanMCMC} object (or \code{CmdStanVB} when \code{vb = TRUE})
 #'     produced by \pkg{cmdstanr}. Use \code{fit$draws()}, \code{fit$summary()}, etc. to
 #'     interact with the posterior; see \pkg{cmdstanr} documentation for details.}
-#'   \item{rawdata}{Data.frame containing the raw data used to fit the model, as specified by
+#'   \item{raw_data}{Data.frame containing the raw data used to fit the model, as specified by
 #'     the user.}
-#'   <% RETURN_REGRESSORS <- "\\item{modelRegressor}{List object containing the " %>
+#'   <% RETURN_REGRESSORS <- "\\item{model_regressor}{List object containing the " %>
 #'   <% RETURN_REGRESSORS <- paste0(RETURN_REGRESSORS, "extracted model-based regressors.}") %>
 #'   <%= ifelse(!is.na(.regressors), RETURN_REGRESSORS, "") %>
 #' }
@@ -171,5 +171,5 @@
 #' plot(output)
 #'
 #' # Show the WAIC and LOOIC model fit estimates
-#' printFit(output)
+#' print_fit(output)
 #' }

@@ -34,8 +34,25 @@ Major refactor; **breaking changes**.
 * `extract_ic()` — now extracts `log_lik` from `fit$draws()` via
   `posterior::as_draws_array()`. The `ic = "looic" | "waic" | "both"` API is
   unchanged.
-* `plot.hBayesDM()` and `plotInd()` — now plot via **bayesplot**
+* `plot.hBayesDM()` and `plot_ind()` — now plot via **bayesplot**
   (`mcmc_trace`, `mcmc_intervals`, `mcmc_areas`) instead of `rstan::stan_plot`.
+* **Breaking — snake_case sweep.** The R public API is now fully snake_case,
+  matching modern R style (tidyverse / Google guides) and the Python
+  package character-for-character. User-visible renames:
+  * Functions: `printFit` → `print_fit`, `plotHDI` → `plot_hdi`,
+    `plotInd` → `plot_ind`, `plotDist` → `plot_dist`, `HDIofMCMC` → `hdi`.
+  * Arguments: `modelRegressor` → `model_regressor`, `indPars` → `ind_pars`,
+    `credMass` → `ci_prob` (on `hdi()` and `plot_hdi()`),
+    `fontSize` → `font_size`, `xLab` → `x_lab`, `yLab` → `y_lab`,
+    `xLim` → `x_lim`, `binSize` → `bin_size`, `sampleVec` → `sample_vec`,
+    `roundTo` → `round_to`, `Title` → `title`.
+  * Result-object slots: `$allIndPars` → `$all_ind_pars`,
+    `$parVals` → `$par_vals`, `$modelRegressor` → `$model_regressor`,
+    `$rawdata` → `$raw_data`. (`$model` and `$fit` unchanged.)
+* **HDI default credible mass.** `hdi()` and `plot_hdi()` default
+  `ci_prob = 0.95` (unchanged on the R side). The Python package now also
+  defaults to `0.95` (previously `0.94`, inherited from arviz) so the two
+  languages produce matching HDI bands out of the box.
 * `additional_args` plumbing fixed: model wrappers that declared a `NULL`
   default (e.g. `banditNarm_2par_lapse` `Narm`, `pstRT_ddm` `initQ`) were
   silently dropping it because `args[[nm]] <- NULL` removes a list element in
@@ -49,7 +66,7 @@ it with one of:
 ```r
 posterior::as_draws_df(output$fit$draws())   # tidy data.frame
 posterior::as_draws_rvars(output$fit$draws())
-output$parVals[["mu_k"]]                      # already-extracted samples
+output$par_vals[["mu_k"]]                     # already-extracted samples
 ```
 
 # hBayesDM 1.3.1

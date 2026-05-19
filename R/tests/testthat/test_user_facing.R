@@ -13,9 +13,9 @@ test_that("result object has expected structure", {
   skip_on_cran()
   expect_s3_class(fitted, "hBayesDM")
   expect_true(inherits(fitted$fit, "CmdStanMCMC"))
-  expect_s3_class(fitted$allIndPars, "data.frame")
-  expect_true(is.list(fitted$parVals))
-  expect_true("log_lik" %in% names(fitted$parVals))
+  expect_s3_class(fitted$all_ind_pars, "data.frame")
+  expect_true(is.list(fitted$par_vals))
+  expect_true("log_lik" %in% names(fitted$par_vals))
   expect_equal(fitted$model, "dd_hyperbolic")
 })
 
@@ -27,14 +27,14 @@ test_that("plot dispatcher accepts trace and simple", {
   expect_true(inherits(p_simple, "ggplot") || inherits(p_simple, "gg"))
 })
 
-test_that("plotInd returns a ggplot for an individual-level parameter", {
+test_that("plot_ind returns a ggplot for an individual-level parameter", {
   skip_on_cran()
   # Pick the first per-subject parameter that actually has draws stored.
-  ind_par <- names(fitted$parVals)[
-    !startsWith(names(fitted$parVals), "mu_") &
-      !names(fitted$parVals) %in% c("sigma", "log_lik")
+  ind_par <- names(fitted$par_vals)[
+    !startsWith(names(fitted$par_vals), "mu_") &
+      !names(fitted$par_vals) %in% c("sigma", "log_lik")
   ][1]
-  p <- plotInd(fitted, ind_par)
+  p <- plot_ind(fitted, ind_par)
   expect_true(inherits(p, "ggplot") || inherits(p, "gg"))
 })
 
@@ -54,28 +54,28 @@ test_that("extract_ic returns LOOIC by default", {
   expect_true(is.finite(ic$LOOIC$estimates[3, 1]))
 })
 
-test_that("printFit returns a data.frame with weights column", {
+test_that("print_fit returns a data.frame with weights column", {
   skip_on_cran()
-  tab <- printFit(fitted)
+  tab <- print_fit(fitted)
   expect_s3_class(tab, "data.frame")
   expect_equal(nrow(tab), 1L)
   expect_true(any(grepl("Weights", colnames(tab))))
 })
 
-test_that("HDIofMCMC returns 2-vector from samples", {
+test_that("hdi returns 2-vector from samples", {
   set.seed(1)
-  hdi_lim <- HDIofMCMC(rnorm(2000), credMass = 0.5)
+  hdi_lim <- hdi(rnorm(2000), ci_prob = 0.5)
   expect_length(hdi_lim, 2)
   expect_true(hdi_lim[1] < hdi_lim[2])
 })
 
-test_that("modelRegressor=TRUE extracts regressors for gng_m1", {
+test_that("model_regressor=TRUE extracts regressors for gng_m1", {
   skip_on_cran()
   m <- suppressWarnings(suppressMessages(
     gng_m1(data = "example", niter = 40, nwarmup = 20,
-           nchain = 1, ncore = 1, modelRegressor = TRUE)
+           nchain = 1, ncore = 1, model_regressor = TRUE)
   ))
-  reg <- m$modelRegressor
+  reg <- m$model_regressor
   expect_true(is.list(reg))
   expect_setequal(names(reg), c("Qgo", "Qnogo", "Wgo", "Wnogo"))
   for (arr in reg) {
@@ -85,11 +85,11 @@ test_that("modelRegressor=TRUE extracts regressors for gng_m1", {
   }
 })
 
-test_that("modelRegressor=TRUE errors when model has no regressors", {
+test_that("model_regressor=TRUE errors when model has no regressors", {
   skip_on_cran()
   expect_error(
     dd_hyperbolic(data = "example", niter = 20, nwarmup = 10,
-                  nchain = 1, ncore = 1, modelRegressor = TRUE),
+                  nchain = 1, ncore = 1, model_regressor = TRUE),
     "regressors"
   )
 })
@@ -102,15 +102,15 @@ test_that("vb=TRUE returns a CmdStanVB fit with usable summaries", {
   ))
   expect_s3_class(m, "hBayesDM")
   expect_true(inherits(m$fit, "CmdStanVB"))
-  expect_s3_class(m$allIndPars, "data.frame")
-  expect_true(is.list(m$parVals))
+  expect_s3_class(m$all_ind_pars, "data.frame")
+  expect_true(is.list(m$par_vals))
 })
 
-test_that("plotDist and plotHDI return ggplot objects", {
+test_that("plot_dist and plot_hdi return ggplot objects", {
   set.seed(1)
   s <- rnorm(500)
-  p1 <- plotDist(s, binSize = 30)
+  p1 <- plot_dist(s, bin_size = 30)
   expect_true(inherits(p1, "ggplot") || inherits(p1, "gg"))
-  p2 <- suppressMessages(plotHDI(s))
+  p2 <- suppressMessages(plot_hdi(s))
   expect_true(inherits(p2, "ggplot") || inherits(p2, "gg"))
 })

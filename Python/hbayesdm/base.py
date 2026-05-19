@@ -580,7 +580,7 @@ class TaskModel(metaclass=ABCMeta):
 
     def plot(self,
              type: str = 'dist',
-             ci_prob: float = 0.94,
+             ci_prob: float = 0.95,
              point_estimate: str = 'mean',
              **kwargs):
         """Plot hyper-parameter distributions or traces.
@@ -596,7 +596,7 @@ class TaskModel(metaclass=ABCMeta):
             traces alongside marginal densities (via ``arviz.plot_trace``).
         ci_prob : float
             Credible interval probability mass for ``type='dist'``. Defaults
-            to 0.94.
+            to 0.95.
         point_estimate : {'mean', 'median', 'mode'} or None
             Which posterior point estimate to mark on density plots. Set to
             ``None`` to omit. Only applies when ``type='dist'``.
@@ -631,7 +631,7 @@ class TaskModel(metaclass=ABCMeta):
 
     def plot_ind(self,
                  var_names: Union[str, List[str]] = None,
-                 ci_prob: float = 0.94,
+                 ci_prob: float = 0.95,
                  **kwargs):
         """Plot per-subject posterior summaries via ``arviz.plot_forest``.
 
@@ -646,7 +646,7 @@ class TaskModel(metaclass=ABCMeta):
             parameters (``self.parameters_desc``).
         ci_prob
             Outer credible interval probability mass. The inner interval is
-            fixed at 0.5 (IQR-like). Defaults to 0.94.
+            fixed at 0.5 (IQR-like). Defaults to 0.95.
         **kwargs
             Forwarded to ``arviz.plot_forest``.
         """

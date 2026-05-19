@@ -90,14 +90,14 @@ def test_print_fit(fitted):
 def test_hdi_helper():
     rng = np.random.default_rng(0)
     samples = rng.standard_normal(2000)
-    interval = hdi(samples, prob=0.5)
+    interval = hdi(samples, ci_prob=0.5)
     assert interval.shape == (2,)
     assert interval[0] < interval[1]
 
 
 def test_plot_hdi_helper():
     rng = np.random.default_rng(0)
-    plot_hdi(rng.standard_normal(500), prob=0.8, title="hdi", xlabel="x")
+    plot_hdi(rng.standard_normal(500), ci_prob=0.8, title="hdi", xlabel="x")
     plt.close("all")
 
 

@@ -256,7 +256,7 @@ Below are some of the simple ways to print the overall statistics of the fitted 
 
 ```{r, eval = FALSE}
 print(summary(fit))
-print(fit$allIndPars)
+print(fit$all_ind_pars)
 ```
 <!-- $ -->
 
@@ -265,7 +265,7 @@ To apply HGF to a single participant's data, you can use [`hgf_ibrb_single`](../
 ```{r, eval = FALSE}
 fit <- hgf_ibrb_single(data = "example", niter = 1000, nwarmup = 500, nchain = 4)
 print(summary(fit))
-print(fit$allIndPars)
+print(fit$all_ind_pars)
 ```
 <!-- $ -->
 
